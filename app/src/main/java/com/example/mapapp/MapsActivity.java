@@ -6,9 +6,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.Activity;
+import android.content.ContentValues;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +19,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.mapapp.databinding.ActivityMapsBinding;
@@ -54,6 +58,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
@@ -62,13 +67,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         LatLng vokasiUGM = new LatLng(-7.7742371, 110.3691362);
-        mMap.addMarker(new MarkerOptions().position(vokasiUGM).title("Marker in Vokasi UGM"));
+        mMap.addMarker(new MarkerOptions().position(vokasiUGM).title("Marker in Vokasi UGM").icon(BitmapDescriptorFactory.fromResource(R.drawable.hao_marker)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(vokasiUGM, 20));
 
         //memanggil method
         setMapOnClick(mMap);
         setPoiClicked(mMap);
         enableMyLocation();
+
+        //mengubah style map
+        try{
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(this, R.raw.stye_json)
+            );
+            if (!success){
+                Log.e(ContentValues.TAG, "Style parsing failed");
+            }
+        } catch (Resources.NotFoundException e){
+            Log.e(ContentValues.TAG, "Cant find style, Error", e);
+        }
     }
 
     @Override
@@ -113,7 +130,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 map.addMarker(new MarkerOptions()
                         .position(latLng)
                         .snippet(text)
-                        .title("Dropped pin"));
+                        .title("Dropped pin").icon(BitmapDescriptorFactory.fromResource(R.drawable.hao_marker)));
             }
         });
     }
@@ -125,7 +142,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onPoiClick(@NonNull PointOfInterest pointOfInterest) {
                 Marker poiMarker = mMap.addMarker(new MarkerOptions()
                         .position(pointOfInterest.latLng)
-                        .title(pointOfInterest.name));
+                        .title(pointOfInterest.name).icon(BitmapDescriptorFactory.fromResource(R.drawable.dino_marker)));
                 poiMarker.showInfoWindow();
             }
         });

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/MapApp/app/src/main/res/drawable/marker.xml" value="0.1" />
         <entry key="..\:/Android/MapApp/app/src/main/res/menu/menu.xml" value="0.10462962962962963" />
       </map>
     </option>
